@@ -1,11 +1,12 @@
+# файл печатает виселицу на экран, выводит результат игры
 class ResultPrinter
-  def initialize
+  def initialize(game)
     @status_image = []
     current_path = File.dirname(__FILE__)
     i = 0
 
-    while i <= 7
-      file_name = current_path + "/image/#{i}.txt"
+    while i <= game.max_errors
+      file_name = current_path + "/../image/#{i}.txt"
 
       if File.exist?(file_name)
         file = File.new(file_name, "r:UTF-8")
@@ -21,17 +22,17 @@ class ResultPrinter
 
   def print_status(game)
     clear_screen
-    puts "\nСлово: " + word_for_print(game.letters, game.good_letters,)
+    puts "\nСлово: " + word_for_print(game.letters, game.good_letters)
     puts "Ошибки - #{game.errors}: #{game.bad_letters.join(", ")}"
     print_hanger(game.errors)
 
-    if game.errors >= 7
+    if game.errors >= game.max_errors
       puts "Вы проиграли!"
     else
       if game.letters.uniq.size == game.good_letters.size
         puts "Поздравляю, вы выиграли!"
       else
-        puts "Угадывайте! Количество оставшихся попыток: " + (7 - game.errors).to_s
+        puts "Угадывайте! Количество оставшихся попыток: #{game.errors_left}"
       end
     end
   end
