@@ -1,42 +1,61 @@
 require "rspec"
-# require_relative "../lib/game"
-# require_relative "../lib/result_printer"
-# require_relative "../lib/word"
-
 require "game"
 require "result_printer"
 require "word"
 
-
-котором напишите два теста, каждый из которых будет начинаться с загадывания слова методом Game.new('загадка')
-(можете загадать любое слово в качестве примера).
 describe Game do
 
-  context '#initialize' do
+  it 'user wins the game' do
+    # Загадываем слово
+    game = Game.new('верёвка')
 
-    it 'initits '
+    # Убедимся, что в начале игры статус — игра в процессе
+    expect(game.status).to eq :in_progress
 
+    # Удачно отгадаем несколько букв, симулируя действия игрока
+
+    # !!!по факту я пропускаю метод ask_next_letter и очень долго обращаюсь к массиву. должен быть другой способ
+    input_letters = ['в']
+    game.check_result(input_letters)
+    input_letters = ['е', 'ё']
+    game.check_result(input_letters)
+    input_letters = ['р']
+    game.check_result(input_letters)
+    input_letters = ['к']
+    game.check_result(input_letters)
+    input_letters = ['а']
+    game.check_result(input_letters)
+
+    # Теперь изучем состояние экземпляра game: количество ошибок и статус
+    expect(game.errors).to eq 0
+    expect(game.status).to eq :won
 
   end
 
+  it 'user loses the game ' do
 
+    # Загадываем слово
+    game = Game.new('карма')
+
+    # Симулируем действия игрока, но не угадываем буквы
+    input_letters = ['в']
+    game.check_result(input_letters)
+    input_letters = ['е', 'ё']
+    game.check_result(input_letters)
+    input_letters = ['х']
+    game.check_result(input_letters)
+    input_letters = ['т']
+    game.check_result(input_letters)
+    input_letters = ['ж']
+    game.check_result(input_letters)
+    input_letters = ['г']
+    game.check_result(input_letters)
+    input_letters = ['ъ']
+    game.check_result(input_letters)
+
+    # Теперь изучем состояние экземпляра game: количество ошибок и статус
+    expect(game.errors).to eq 7
+    expect(game.status).to eq :lost
+
+  end
 end
-
-
-
-# Давайте попробуем написать «интегральный тест» — такой, в котором тестируется не работа отдельного метода,
-#  а работа сразу нескольких методов, которые используются по ходу использования класса или его экземпляра.
-#    Возьмите игру «Виселица» (самую последнюю версию) и протестируйте класс Game: напишите два теста, первый
-# из которых симулирует выигрышное поведение пользователя, а второй — проигрыш. Проверьте, что игра перешла в
-# нужное состояние.
-
-
-
-
-
-
-  Дальше в каждом тесте сымитируйте ходы пользователя, вызвав последовательно несколько раз метод
-game.next_step('я') (буквы всегда разные, ясен пень).
-  В первом тесте пользователь должен называть буквы правильно, а во втором — нет.
-
-  В конце каждого теста проверьте статус игры и, например, количество ошибок.
