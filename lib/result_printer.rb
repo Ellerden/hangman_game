@@ -1,5 +1,6 @@
 # файл печатает виселицу на экран, выводит результат игры
 class ResultPrinter
+
   def initialize(game)
     @status_image = []
     current_path = File.dirname(__FILE__)
@@ -22,6 +23,7 @@ class ResultPrinter
 
   def print_status(game)
     clear_screen
+
     puts "\nСлово: " + word_for_print(game.letters, game.good_letters)
     puts "Ошибки - #{game.errors}: #{game.bad_letters.join(", ")}"
     print_hanger(game.errors)

@@ -3,8 +3,7 @@
 
 class Game
   MAX_ERRORS = 7
-  attr_accessor :letters, :errors, :good_letters, :bad_letters, :status
-  # attr_accessor :status
+  attr_reader :letters, :errors, :good_letters, :bad_letters, :status
 
   def initialize(word)
     @letters = get_letters(word)
@@ -12,6 +11,7 @@ class Game
     @good_letters = []
     @bad_letters = []
     @status = :in_progress # :won, :lost
+    @good = false
   end
 
   def max_errors
@@ -26,11 +26,14 @@ class Game
     if (word == nil) || (word == "")
       abort "Ошибка чтения файла со словами"
     end
+
       word.split("")
   end
 
   def add_to_good(letters, input_letters)
     if letters.any? { |i| input_letters.include?(i) }
+      @good = true  # буква в слове встречается, значит она хорошая
+
       # если слово содержит и Е и Ё или И и Й одновременно
       if input_letters.count == 2 && (input_letters - letters).empty?
         @good_letters << input_letters[0]
@@ -41,6 +44,10 @@ class Game
         # условие когда отгадано все слово
       end
     end
+  end
+
+  def any_good?
+    @good
   end
 
   def in_progress?
@@ -56,11 +63,11 @@ class Game
   end
 
   def solved?
-    return if @letters.uniq.size == @good_letters.size
+    @letters.uniq.size == @good_letters.size
   end
 
   def repeated?(input_letters)
-    return if (@good_letters.any? { |i| input_letters.include?(i) } ||
+    (@good_letters.any? { |i| input_letters.include?(i) } ||
       @bad_letters.any? { |i| input_letters.include?(i) } )
   end
 
@@ -85,6 +92,8 @@ class Game
   end
 
   def check_result(input_letters)
+    # счетчик ввел ли пользователь хорошую букву или нет
+    @good = false
 
     # если такие буквы уже вводились - выходим из метода
     return if repeated?(input_letters)
@@ -92,12 +101,13 @@ class Game
     # если введенные буквы есть в слове, добавляем в good_letters
     add_to_good(@letters, input_letters)
 
-    if solved?
-      @status = :won
-    else
+    @status = :won if solved?
+
+    # если была введена плохая буква, увеличиваем количество ошибок и добавляем в bad_letters
+    if !any_good?
       @bad_letters << input_letters[0]
       @errors += 1
       @status = :lost if lost?
+    end
   end
-end
 end
