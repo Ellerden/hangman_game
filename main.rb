@@ -2,6 +2,7 @@ require_relative "lib/result_printer"
 require_relative "lib/game"
 require_relative "lib/word"
 require "unicode"
+
 puts "Игра виселица версия 4.0!"
 current_path = File.dirname(__FILE__)
 
